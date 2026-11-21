@@ -10,8 +10,19 @@ export type User = {
     [key: string]: unknown;
 };
 
+export type Admin = {
+    id: number;
+    name: string;
+    email: string;
+    created_at: string;
+    updated_at: string;
+    [key: string]: unknown;
+};
+
 export type Auth = {
     user: User;
+    // 管理者としてログイン中のときだけ値が入る（会員用の画面では null）
+    admin: Admin | null;
 };
 
 export type Passkey = {
