@@ -17,6 +17,15 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
+        // 未ログインで /admin/* を開いたら管理者のログイン画面へ、
+        // ログイン済みで guest 用の画面を開いたら管理画面へ戻す。
+        $middleware->redirectGuestsTo(fn (Request $request) => $request->is('admin', 'admin/*')
+            ? route('admin.login')
+            : route('login'));
+        $middleware->redirectUsersTo(fn (Request $request) => $request->is('admin', 'admin/*')
+            ? route('admin.dashboard')
+            : route('dashboard'));
+
         $middleware->web(append: [
             HandleAppearance::class,
             HandleInertiaRequests::class,
